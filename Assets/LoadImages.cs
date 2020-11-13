@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LoadImages : MonoBehaviour
 {
+    //this static variable will be filled upon gallaries button click, to catch which button clicked and show the images accordengly.
     private static string ActiveGallery = "";
     // Start is called before the first frame update
     void Start()
@@ -15,49 +17,47 @@ public class LoadImages : MonoBehaviour
         string StearmingPath = "assets/StreamingAssets/";
         string JsonFileName = "gallery.json";
         var json = File.ReadAllText(StearmingPath + JsonFileName);
+
+        //conver json into objects.
         var GalleryItems = JsonHelper.ReadGalleryJson(json);
 
         //find the content of the scroll view to append the images
         var ScrollView = GameObject.Find("Content");
-        
-        //loop the images and append to UI
-        foreach (var item in GalleryItems.objects)
+
+        //get selectd gallery items
+        var SelectedGalleryItems = GalleryItems.objects.Where(x => x.galleryId == ActiveGallery).FirstOrDefault();
+      
+        //loop all images within the gallery.
+        foreach (var item2 in SelectedGalleryItems.items)
         {
-            if (item.galleryId != ActiveGallery)
-                continue;
+            //initiat the image that will be dynamically added to the UI.
+            GameObject imgObject = new GameObject("GalleryItem");
+            RectTransform trans = imgObject.AddComponent<RectTransform>();
+            trans.transform.SetParent(ScrollView.transform); // setting parent as the scrollview
+            trans.localScale = Vector3.one;
+            trans.anchoredPosition = new Vector2(0f, 0f); // setting position, will be on center                              
 
-            foreach (var item2 in item.items)
-            {
-                //initial image object
-                GameObject imgObject = new GameObject("GalleryItem");
-
-                RectTransform trans = imgObject.AddComponent<RectTransform>();
-                trans.transform.SetParent(ScrollView.transform); // setting parent
-                trans.localScale = Vector3.one;
-                trans.anchoredPosition = new Vector2(0f, 0f); // setting position, will be on center                              
-
-                Image image = imgObject.AddComponent<Image>();                
-                image.sprite = this.LoadNewSprite(StearmingPath+item2.Path);
-
-                //calc width and keep aspect ratio.
-                var aspectRatio = (image.sprite.rect.width / image.sprite.rect.height);
-                var newHeight = ((Screen.width-17) / aspectRatio); //-17 to remove the reserved area by scrollbars.
-                trans.sizeDelta = new Vector2((Screen.width - 17), newHeight); // custom size
-                image.preserveAspect = true;
-
-                //append to ui
-                imgObject.transform.SetParent(ScrollView.transform);
+            Image image = imgObject.AddComponent<Image>();  
                 
-            }
+            //convert the image into sprite.
+            image.sprite = this.LoadNewSprite(StearmingPath+item2.Path);
+
+
+            //calc width and keep aspect ratio.
+            var aspectRatio = (image.sprite.rect.width / image.sprite.rect.height);
+            var newHeight = ((Screen.width-17) / aspectRatio); //-17 to remove the reserved area by scrollbars, to avoid horizontal scrolls
+            trans.sizeDelta = new Vector2((Screen.width - 17), newHeight); // width = screen, height as calculated.
+            image.preserveAspect = true;
+
+            //append to ui by setting the parent as the scrollview.
+            imgObject.transform.SetParent(ScrollView.transform);
+                
         }
+       
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
-
+    // on gallery type click, hide the buttons and show the selected gallery.
     public void MenuClick(string GalleryName)
     {
         ActiveGallery = GalleryName;
@@ -67,7 +67,7 @@ public class LoadImages : MonoBehaviour
     }
 
     // extra functions to convert image to sprite
-    public Sprite LoadNewSprite(string FilePath, float PixelsPerUnit = 100.0f)
+    private Sprite LoadNewSprite(string FilePath, float PixelsPerUnit = 100.0f)
     {
         Sprite NewSprite;
         Texture2D SpriteTexture = LoadTexture(FilePath);
@@ -75,7 +75,7 @@ public class LoadImages : MonoBehaviour
 
         return NewSprite;
     }
-    public Texture2D LoadTexture(string FilePath)
+    private Texture2D LoadTexture(string FilePath)
     {
         Texture2D Tex2D;
         byte[] FileData;
@@ -83,10 +83,10 @@ public class LoadImages : MonoBehaviour
         if (File.Exists(FilePath))
         {
             FileData = File.ReadAllBytes(FilePath);
-            Tex2D = new Texture2D(2, 2);           // Create new "empty" texture
-            if (Tex2D.LoadImage(FileData))           // Load the imagedata into the texture (size is set automatically)
-                return Tex2D;                 // If data = readable -> return texture
+            Tex2D = new Texture2D(2, 2);          
+            if (Tex2D.LoadImage(FileData))
+                return Tex2D;
         }
-        return null;                     // Return null if load failed
+        return null;
     }
 }

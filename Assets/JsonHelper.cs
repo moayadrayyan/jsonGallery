@@ -6,6 +6,7 @@ namespace Assets
 {
     public static class JsonHelper
     {
+        //appending root element to json to be serialized to the curresponding objects.
         public static Gallery ReadGalleryJson(string json)
         {
             return JsonUtility.FromJson<Gallery>("{ \"objects\":"+json+"}");

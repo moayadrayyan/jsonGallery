@@ -64,7 +64,6 @@
   <ItemGroup>
     <Compile Include="Assets\JsonHelper.cs" />
     <Compile Include="Assets\LoadImages.cs" />
-    <Compile Include="Assets\Racers.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/workspace/unity/TestDev/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

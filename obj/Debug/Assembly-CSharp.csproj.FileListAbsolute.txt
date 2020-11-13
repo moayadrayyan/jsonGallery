@@ -233,7 +233,6 @@ C:\workspace\unity\TestDev\Temp\bin\Debug\UnityEngine.UnityWebRequestAudioModule
 C:\workspace\unity\TestDev\Temp\bin\Debug\UnityEngine.VideoModule.xml
 C:\workspace\unity\TestDev\Temp\bin\Debug\UnityEngine.XRModule.xml
 C:\workspace\unity\TestDev\Temp\bin\Debug\nunit.framework.xml
-C:\workspace\unity\TestDev\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 C:\workspace\unity\TestDev\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache
 C:\workspace\unity\TestDev\obj\Debug\Assembly-CSharp.csproj.CopyComplete
 C:\workspace\unity\TestDev\obj\Debug\Assembly-CSharp.dll
